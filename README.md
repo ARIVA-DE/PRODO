@@ -16,9 +16,9 @@ Parameter:
 
 # Nutzung des JWT
 Mit diesem JWT kann dann die entsprechende Schnittstelle abgerufen werden
-Schnittstellen:
+## Schnittstellen:
 
-Schnittstelle 1: 
+### Schnittstelle 1: 
 POST https://prodo-api.ariva-services.de/api/v1/multiAggregation/sum
 
 JSON-POST-Body (nach // folgen Kommentare zum Feld; das language-Feld kann auch weggelassen werden, da es hier keine Auswirkung hat):
@@ -69,7 +69,7 @@ Antwort-Format für beispielsweise die Aggregations-Dimension "PUBLISHER" (für 
       ...
     ]
 
-Schnittstelle 2:
+### Schnittstelle 2:
  
 POST https://prodo-api.ariva-services.de/api/v1/multiAggregation/sum/csv
 
@@ -86,7 +86,7 @@ Antwort-CSV-Format für beispielsweise die Aggregations-Dimension "PUBLISHER" (f
     "publisher-name-2";"zahl-4";"zahl-5";"zahl-6"
     ...
 
-Schnittstelle 3: 
+### Schnittstelle 3: 
 POST https://prodo-api.ariva-services.de/api/v1/multiAggregation/timeFrame
 
 JSON-POST-Body (nach // folgen Kommentare zum Feld; das language-Feld kann auch weggelassen werden, da es hier keine Auswirkung hat; im Vergleich zu den ersten beiden Schnittstellen kommen die Felder aggregationCountType und aggregationType hinzu):
@@ -154,7 +154,7 @@ Antwort-Format für beispielsweise die Aggregations-Dimension "PUBLISHER" (für 
       ...
     ]
 
-Schnittstelle 4: 
+### Schnittstelle 4: 
 POST https://prodo-api.ariva-services.de/api/v1/multiAggregation/timeFrame/csv
 
 JSON-POST-Body exakt wie in Schnittstelle 3 (das language-Feld muss allerdings hier gesetzt werden und wirkt sich auch aus):
