@@ -3,23 +3,10 @@
 
 Um die externe API zum Abruf der Analysedaten zu benutzen, sind folgende Schritte notwendig
 
-# Abruf des Authentifizierungstoken (JWT)
-Es wird folgende Schnittstelle abgerufen werden müssen, um ein entsprechendes JWT zu erhalten.
-Schnittstelle:
-
-GET https://prodo-api.ariva-services.de/api/v1/authentication
-
-Parameter:
-
-* username
-* password
-
-# Nutzung des JWT
-Mit diesem JWT kann dann die entsprechende Schnittstelle abgerufen werden
 ## Schnittstellen:
 
 ### Schnittstelle 1: 
-POST https://prodo-api.ariva-services.de/api/v1/multiAggregation/sum
+POST https://prodo-api.ariva-services.de/api/v1/multiAggregation/sum/programmatic?apiToken=YOURAPITOKENHERE
 
 JSON-POST-Body (nach // folgen Kommentare zum Feld; das language-Feld kann auch weggelassen werden, da es hier keine Auswirkung hat):
 
@@ -71,7 +58,7 @@ Antwort-Format für beispielsweise die Aggregations-Dimension "PUBLISHER" (für 
 
 ### Schnittstelle 2:
  
-POST https://prodo-api.ariva-services.de/api/v1/multiAggregation/sum/csv
+POST https://prodo-api.ariva-services.de/api/v1/multiAggregation/sum/csv/programmatic?apiToken=YOURAPITOKENHERE
 
 JSON-POST-Body exakt wie in Schnittstelle 1 (das language-Feld muss allerdings hier gesetzt werden und wirkt sich auch aus):
 Antwort-CSV-Format für beispielsweise die Aggregations-Dimension "PUBLISHER" (für jeden Publisher wird wie in der Schnittstelle 1 die Gesamtzahl der Klicks und Views, sowie die Klickrate berechnet; vgl. Antwort-JSON-Format):
@@ -87,7 +74,7 @@ Antwort-CSV-Format für beispielsweise die Aggregations-Dimension "PUBLISHER" (f
     ...
 
 ### Schnittstelle 3: 
-POST https://prodo-api.ariva-services.de/api/v1/multiAggregation/timeFrame
+POST https://prodo-api.ariva-services.de/api/v1/multiAggregation/timeFrame/programmatic?apiToken=YOURAPITOKENHERE
 
 JSON-POST-Body (nach // folgen Kommentare zum Feld; das language-Feld kann auch weggelassen werden, da es hier keine Auswirkung hat; im Vergleich zu den ersten beiden Schnittstellen kommen die Felder aggregationCountType und aggregationType hinzu):
 
@@ -155,7 +142,7 @@ Antwort-Format für beispielsweise die Aggregations-Dimension "PUBLISHER" (für 
     ]
 
 ### Schnittstelle 4: 
-POST https://prodo-api.ariva-services.de/api/v1/multiAggregation/timeFrame/csv
+POST https://prodo-api.ariva-services.de/api/v1/multiAggregation/timeFrame/csv/programmatic?apiToken=YOURAPITOKENHERE
 
 JSON-POST-Body exakt wie in Schnittstelle 3 (das language-Feld muss allerdings hier gesetzt werden und wirkt sich auch aus):
 
@@ -175,36 +162,24 @@ Antwort-CSV-Format für beispielsweise die Aggregations-Dimension "PUBLISHER" (f
     "date-string-2";"publisher-name-2";"zahl-4"
     ...
 
-Das JWT muss hierbei jeweils im Header übergeben werden. Entsprechende Beispiel für Java Spring Boot und Postman sind weiter unten zu finden
 
 # Implementierung mit Postman
 Link zu Postman: https://www.postman.com/downloads/
 Damit kann man z.B. folgendes Curl-Kommando als raw text importieren:
 
-    curl -X POST "https://prodo-api.ariva-services.de/api/v1/multiAggregation/sum" -H  "accept: */*" -H  "Authorization: bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJZR0tJd1kwMGQ0Y3ZYS0RJNDNrN1Q3NklDZXpBaENQTHBQREltSkdpeEhVIn0.eyJleHAiOjE2MDQ2OTQwMjAsImlhdCI6MTYwNDY2NTIyMCwianRpIjoiNTYyMTRiYWYtNDEwNi00ZmEyLWI5Y2EtNWRiNjgzNjgxNDRmIiwiaXNzIjoiaHR0cHM6Ly9wcm9kby1zc28tdGkuYXJpdmEtc2VydmljZXMuZGUvYXV0aC9yZWFsbXMvUFJPRE8iLCJhdWQiOlsicmVhbG0tbWFuYWdlbWVudCIsImFjY291bnQiXSwic3ViIjoiMDM5NjY1ODctNWIwNC00Y2Y5LThiMmUtMTAwODQyZjZlZmMxIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoiYmFja2VuZFJlYWQiLCJzZXNzaW9uX3N0YXRlIjoiODgwZTZjZWEtZTliZS00OWE4LWEzZTgtZmZhMjY0YzFmNjc3IiwiYWNyIjoiMSIsInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJBZHZlcnRpc2VyLXN3X3VybCIsIkFkdmVydGlzZXItVm9udG9iZWwiLCJBZHZlcnRpc2VyIENvbW1lcnpiYW5rIiwiUHVibGlzaGVyLVplcnRpZmlrYXRlQW5sZWdlciIsIkFkdmVydGlzZXItc3dfdGVzdF8xNV9tYWkiLCJQdWJsaXNoZXIgQVJJVkEiLCJQdWJsaXNoZXItc3d1cmwiLCJBZ2VudHVyIChDb21tZXJ6YmFuayAvIFZvbnRvYmVsKSIsIlB1Ymxpc2hlciBXTyIsIkFkdmVydGlzZXIiLCJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIiwiVmVyd2FsdHVuZyIsIlB1Ymxpc2hlci1zd3VybDMiLCJQdWJsaXNoZXItT25WaXN0YSIsIlZlcm1hcmt0ZXIiLCJBZHZlcnRpc2VyLUhTQkMiLCJQdWJsaXNoZXIiLCJBZG1pbiIsIkFkdmVydGlzZXItdGVzdCIsIkFkdmVydGlzZXItc3dfdGVzdCIsIlZlcm1hcmt0ZXIgKEFkaXNmYWN0aW9uKSIsIkFnZW50dXIiLCJBZHZlcnRpc2VyLWpoYV90ZXN0IiwiQWR2ZXJ0aXNlci1NYl90ZXN0Il19LCJyZXNvdXJjZV9hY2Nlc3MiOnsicmVhbG0tbWFuYWdlbWVudCI6eyJyb2xlcyI6WyJ2aWV3LWlkZW50aXR5LXByb3ZpZGVycyIsInZpZXctcmVhbG0iLCJtYW5hZ2UtaWRlbnRpdHktcHJvdmlkZXJzIiwiaW1wZXJzb25hdGlvbiIsInJlYWxtLWFkbWluIiwiY3JlYXRlLWNsaWVudCIsIm1hbmFnZS11c2VycyIsInF1ZXJ5LXJlYWxtcyIsInZpZXctYXV0aG9yaXphdGlvbiIsInF1ZXJ5LWNsaWVudHMiLCJxdWVyeS11c2VycyIsIm1hbmFnZS1ldmVudHMiLCJtYW5hZ2UtcmVhbG0iLCJ2aWV3LWV2ZW50cyIsInZpZXctdXNlcnMiLCJ2aWV3LWNsaWVudHMiLCJtYW5hZ2UtYXV0aG9yaXphdGlvbiIsIm1hbmFnZS1jbGllbnRzIiwicXVlcnktZ3JvdXBzIl19LCJiYWNrZW5kUmVhZCI6eyJyb2xlcyI6WyJtcmVfdGVzdCJdfSwiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwic2NvcGUiOiJwcm9maWxlIGVtYWlsIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsIm5hbWUiOiJKZXNzZSBIYWFmIiwicHJlZmVycmVkX3VzZXJuYW1lIjoiamhhIiwibG9jYWxlIjoiZGUiLCJnaXZlbl9uYW1lIjoiSmVzc2UiLCJmYW1pbHlfbmFtZSI6IkhhYWYiLCJlbWFpbCI6Implc3NlLmhhYWZAYXJpdmEuZGUifQ.Femf9puFyCP1eL-c5YZGl7cW7y38DQJUYTbApzCXTld_dA37FaZGDF_OLjTjr3y4PpZXFxxubFbM59Ppkbk2hg9KmrZzdGtpj9ryPEDkYk78mljzIQ5_t1IXAXVzTcjH8-YXFgAjFlFZpaWaH_dsxDAJ06FmWcopQgHcexfCRFx4mEbPpM38zw7lPcLzysn_9EgTilVvGpGew6hWJ29BwFUkbBBKM2XGjwRIZ5YREX_byYH8SAEvI-3abAbzPLj9d5Tqhg-1MH5T1KIhOKIQLB-kIdwKvvc3lIbuxPNUXL3iE06qqF5UJXkRsm89EaSEqaWRjLAp1iDXMVG9Ni_9aw" -H  "Content-Type: application/json" -d "{  \"adSlotIds\": [],  \"advertiserIds\": [],  \"aggregationDimension\": \"PUBLISHER\",  \"bouquetIds\": [],  \"devices\": [],  \"endDate\": \"2020-11-06\",  \"language\": \"de\",  \"publisherIds\": [],  \"regions\": [],  \"startDate\": \"2020-10-01\"}"
+    curl -X POST "https://prodo-api.ariva-services.de/api/v1/multiAggregation/sum/programmatic?apiToken=YOURAPITOKENHERE" -H  "accept: */*"  -H  "Content-Type: application/json" -d "{  \"adSlotIds\": [],  \"advertiserIds\": [],  \"aggregationDimension\": \"PUBLISHER\",  \"bouquetIds\": [],  \"devices\": [],  \"endDate\": \"2020-11-06\",  \"language\": \"de\",  \"publisherIds\": [],  \"regions\": [],  \"startDate\": \"2020-10-01\"}"
 
 Hier noch Beispiel-curl-Kommandos für die anderen Schnittstellen:
 
-    curl -X POST "https://prodo-api.ariva-services.de/api/v1/multiAggregation/sum/csv" -H  "accept: application/octet-stream" -H  "Authorization: bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJZR0tJd1kwMGQ0Y3ZYS0RJNDNrN1Q3NklDZXpBaENQTHBQREltSkdpeEhVIn0.eyJleHAiOjE2MDQ2OTQwMjAsImlhdCI6MTYwNDY2NTIyMCwianRpIjoiNTYyMTRiYWYtNDEwNi00ZmEyLWI5Y2EtNWRiNjgzNjgxNDRmIiwiaXNzIjoiaHR0cHM6Ly9wcm9kby1zc28tdGkuYXJpdmEtc2VydmljZXMuZGUvYXV0aC9yZWFsbXMvUFJPRE8iLCJhdWQiOlsicmVhbG0tbWFuYWdlbWVudCIsImFjY291bnQiXSwic3ViIjoiMDM5NjY1ODctNWIwNC00Y2Y5LThiMmUtMTAwODQyZjZlZmMxIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoiYmFja2VuZFJlYWQiLCJzZXNzaW9uX3N0YXRlIjoiODgwZTZjZWEtZTliZS00OWE4LWEzZTgtZmZhMjY0YzFmNjc3IiwiYWNyIjoiMSIsInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJBZHZlcnRpc2VyLXN3X3VybCIsIkFkdmVydGlzZXItVm9udG9iZWwiLCJBZHZlcnRpc2VyIENvbW1lcnpiYW5rIiwiUHVibGlzaGVyLVplcnRpZmlrYXRlQW5sZWdlciIsIkFkdmVydGlzZXItc3dfdGVzdF8xNV9tYWkiLCJQdWJsaXNoZXIgQVJJVkEiLCJQdWJsaXNoZXItc3d1cmwiLCJBZ2VudHVyIChDb21tZXJ6YmFuayAvIFZvbnRvYmVsKSIsIlB1Ymxpc2hlciBXTyIsIkFkdmVydGlzZXIiLCJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIiwiVmVyd2FsdHVuZyIsIlB1Ymxpc2hlci1zd3VybDMiLCJQdWJsaXNoZXItT25WaXN0YSIsIlZlcm1hcmt0ZXIiLCJBZHZlcnRpc2VyLUhTQkMiLCJQdWJsaXNoZXIiLCJBZG1pbiIsIkFkdmVydGlzZXItdGVzdCIsIkFkdmVydGlzZXItc3dfdGVzdCIsIlZlcm1hcmt0ZXIgKEFkaXNmYWN0aW9uKSIsIkFnZW50dXIiLCJBZHZlcnRpc2VyLWpoYV90ZXN0IiwiQWR2ZXJ0aXNlci1NYl90ZXN0Il19LCJyZXNvdXJjZV9hY2Nlc3MiOnsicmVhbG0tbWFuYWdlbWVudCI6eyJyb2xlcyI6WyJ2aWV3LWlkZW50aXR5LXByb3ZpZGVycyIsInZpZXctcmVhbG0iLCJtYW5hZ2UtaWRlbnRpdHktcHJvdmlkZXJzIiwiaW1wZXJzb25hdGlvbiIsInJlYWxtLWFkbWluIiwiY3JlYXRlLWNsaWVudCIsIm1hbmFnZS11c2VycyIsInF1ZXJ5LXJlYWxtcyIsInZpZXctYXV0aG9yaXphdGlvbiIsInF1ZXJ5LWNsaWVudHMiLCJxdWVyeS11c2VycyIsIm1hbmFnZS1ldmVudHMiLCJtYW5hZ2UtcmVhbG0iLCJ2aWV3LWV2ZW50cyIsInZpZXctdXNlcnMiLCJ2aWV3LWNsaWVudHMiLCJtYW5hZ2UtYXV0aG9yaXphdGlvbiIsIm1hbmFnZS1jbGllbnRzIiwicXVlcnktZ3JvdXBzIl19LCJiYWNrZW5kUmVhZCI6eyJyb2xlcyI6WyJtcmVfdGVzdCJdfSwiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwic2NvcGUiOiJwcm9maWxlIGVtYWlsIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsIm5hbWUiOiJKZXNzZSBIYWFmIiwicHJlZmVycmVkX3VzZXJuYW1lIjoiamhhIiwibG9jYWxlIjoiZGUiLCJnaXZlbl9uYW1lIjoiSmVzc2UiLCJmYW1pbHlfbmFtZSI6IkhhYWYiLCJlbWFpbCI6Implc3NlLmhhYWZAYXJpdmEuZGUifQ.Femf9puFyCP1eL-c5YZGl7cW7y38DQJUYTbApzCXTld_dA37FaZGDF_OLjTjr3y4PpZXFxxubFbM59Ppkbk2hg9KmrZzdGtpj9ryPEDkYk78mljzIQ5_t1IXAXVzTcjH8-YXFgAjFlFZpaWaH_dsxDAJ06FmWcopQgHcexfCRFx4mEbPpM38zw7lPcLzysn_9EgTilVvGpGew6hWJ29BwFUkbBBKM2XGjwRIZ5YREX_byYH8SAEvI-3abAbzPLj9d5Tqhg-1MH5T1KIhOKIQLB-kIdwKvvc3lIbuxPNUXL3iE06qqF5UJXkRsm89EaSEqaWRjLAp1iDXMVG9Ni_9aw" -H  "Content-Type: application/json" -d "{  \"adSlotIds\": [],  \"advertiserIds\": [],  \"aggregationDimension\": \"PUBLISHER\",  \"bouquetIds\": [],  \"devices\": [],  \"endDate\": \"2020-11-06\",  \"language\": \"de\",  \"publisherIds\": [],  \"regions\": [],  \"startDate\": \"2020-10-01\"}"
+    curl -X POST "https://prodo-api.ariva-services.de/api/v1/multiAggregation/sum/csv/programmatic?apiToken=YOURAPITOKENHERE" -H  "accept: application/octet-stream"  -H  "Content-Type: application/json" -d "{  \"adSlotIds\": [],  \"advertiserIds\": [],  \"aggregationDimension\": \"PUBLISHER\",  \"bouquetIds\": [],  \"devices\": [],  \"endDate\": \"2020-11-06\",  \"language\": \"de\",  \"publisherIds\": [],  \"regions\": [],  \"startDate\": \"2020-10-01\"}"
 
-    curl -X POST "https://prodo-api.ariva-services.de/api/v1/multiAggregation/timeFrame" -H  "accept: */*" -H  "Authorization: bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJZR0tJd1kwMGQ0Y3ZYS0RJNDNrN1Q3NklDZXpBaENQTHBQREltSkdpeEhVIn0.eyJleHAiOjE2MDQ2OTQwMjAsImlhdCI6MTYwNDY2NTIyMCwianRpIjoiNTYyMTRiYWYtNDEwNi00ZmEyLWI5Y2EtNWRiNjgzNjgxNDRmIiwiaXNzIjoiaHR0cHM6Ly9wcm9kby1zc28tdGkuYXJpdmEtc2VydmljZXMuZGUvYXV0aC9yZWFsbXMvUFJPRE8iLCJhdWQiOlsicmVhbG0tbWFuYWdlbWVudCIsImFjY291bnQiXSwic3ViIjoiMDM5NjY1ODctNWIwNC00Y2Y5LThiMmUtMTAwODQyZjZlZmMxIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoiYmFja2VuZFJlYWQiLCJzZXNzaW9uX3N0YXRlIjoiODgwZTZjZWEtZTliZS00OWE4LWEzZTgtZmZhMjY0YzFmNjc3IiwiYWNyIjoiMSIsInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJBZHZlcnRpc2VyLXN3X3VybCIsIkFkdmVydGlzZXItVm9udG9iZWwiLCJBZHZlcnRpc2VyIENvbW1lcnpiYW5rIiwiUHVibGlzaGVyLVplcnRpZmlrYXRlQW5sZWdlciIsIkFkdmVydGlzZXItc3dfdGVzdF8xNV9tYWkiLCJQdWJsaXNoZXIgQVJJVkEiLCJQdWJsaXNoZXItc3d1cmwiLCJBZ2VudHVyIChDb21tZXJ6YmFuayAvIFZvbnRvYmVsKSIsIlB1Ymxpc2hlciBXTyIsIkFkdmVydGlzZXIiLCJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIiwiVmVyd2FsdHVuZyIsIlB1Ymxpc2hlci1zd3VybDMiLCJQdWJsaXNoZXItT25WaXN0YSIsIlZlcm1hcmt0ZXIiLCJBZHZlcnRpc2VyLUhTQkMiLCJQdWJsaXNoZXIiLCJBZG1pbiIsIkFkdmVydGlzZXItdGVzdCIsIkFkdmVydGlzZXItc3dfdGVzdCIsIlZlcm1hcmt0ZXIgKEFkaXNmYWN0aW9uKSIsIkFnZW50dXIiLCJBZHZlcnRpc2VyLWpoYV90ZXN0IiwiQWR2ZXJ0aXNlci1NYl90ZXN0Il19LCJyZXNvdXJjZV9hY2Nlc3MiOnsicmVhbG0tbWFuYWdlbWVudCI6eyJyb2xlcyI6WyJ2aWV3LWlkZW50aXR5LXByb3ZpZGVycyIsInZpZXctcmVhbG0iLCJtYW5hZ2UtaWRlbnRpdHktcHJvdmlkZXJzIiwiaW1wZXJzb25hdGlvbiIsInJlYWxtLWFkbWluIiwiY3JlYXRlLWNsaWVudCIsIm1hbmFnZS11c2VycyIsInF1ZXJ5LXJlYWxtcyIsInZpZXctYXV0aG9yaXphdGlvbiIsInF1ZXJ5LWNsaWVudHMiLCJxdWVyeS11c2VycyIsIm1hbmFnZS1ldmVudHMiLCJtYW5hZ2UtcmVhbG0iLCJ2aWV3LWV2ZW50cyIsInZpZXctdXNlcnMiLCJ2aWV3LWNsaWVudHMiLCJtYW5hZ2UtYXV0aG9yaXphdGlvbiIsIm1hbmFnZS1jbGllbnRzIiwicXVlcnktZ3JvdXBzIl19LCJiYWNrZW5kUmVhZCI6eyJyb2xlcyI6WyJtcmVfdGVzdCJdfSwiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwic2NvcGUiOiJwcm9maWxlIGVtYWlsIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsIm5hbWUiOiJKZXNzZSBIYWFmIiwicHJlZmVycmVkX3VzZXJuYW1lIjoiamhhIiwibG9jYWxlIjoiZGUiLCJnaXZlbl9uYW1lIjoiSmVzc2UiLCJmYW1pbHlfbmFtZSI6IkhhYWYiLCJlbWFpbCI6Implc3NlLmhhYWZAYXJpdmEuZGUifQ.Femf9puFyCP1eL-c5YZGl7cW7y38DQJUYTbApzCXTld_dA37FaZGDF_OLjTjr3y4PpZXFxxubFbM59Ppkbk2hg9KmrZzdGtpj9ryPEDkYk78mljzIQ5_t1IXAXVzTcjH8-YXFgAjFlFZpaWaH_dsxDAJ06FmWcopQgHcexfCRFx4mEbPpM38zw7lPcLzysn_9EgTilVvGpGew6hWJ29BwFUkbBBKM2XGjwRIZ5YREX_byYH8SAEvI-3abAbzPLj9d5Tqhg-1MH5T1KIhOKIQLB-kIdwKvvc3lIbuxPNUXL3iE06qqF5UJXkRsm89EaSEqaWRjLAp1iDXMVG9Ni_9aw" -H  "Content-Type: application/json" -d "{  \"adSlotIds\": [],  \"advertiserIds\": [],  \"aggregationCountType\": \"CLICKS\",  \"aggregationDimension\": \"PUBLISHER\",  \"aggregationType\": \"COMPLETE\",  \"bouquetIds\": [],  \"devices\": [],  \"endDate\": \"2020-11-06\",  \"language\": \"de\",  \"publisherIds\": [],  \"regions\": [],  \"startDate\": \"2020-10-01\"}"
+    curl -X POST "https://prodo-api.ariva-services.de/api/v1/multiAggregation/timeFrame/programmatic?apiToken=YOURAPITOKENHERE" -H  "accept: */*" -H  "Content-Type: application/json" -d "{  \"adSlotIds\": [],  \"advertiserIds\": [],  \"aggregationCountType\": \"CLICKS\",  \"aggregationDimension\": \"PUBLISHER\",  \"aggregationType\": \"COMPLETE\",  \"bouquetIds\": [],  \"devices\": [],  \"endDate\": \"2020-11-06\",  \"language\": \"de\",  \"publisherIds\": [],  \"regions\": [],  \"startDate\": \"2020-10-01\"}"
 
-    curl -X POST "https://prodo-api.ariva-services.de/api/v1/multiAggregation/timeFrame/csv" -H  "accept: application/octet-stream" -H  "Authorization: bearer eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJZR0tJd1kwMGQ0Y3ZYS0RJNDNrN1Q3NklDZXpBaENQTHBQREltSkdpeEhVIn0.eyJleHAiOjE2MDQ2OTQwMjAsImlhdCI6MTYwNDY2NTIyMCwianRpIjoiNTYyMTRiYWYtNDEwNi00ZmEyLWI5Y2EtNWRiNjgzNjgxNDRmIiwiaXNzIjoiaHR0cHM6Ly9wcm9kby1zc28tdGkuYXJpdmEtc2VydmljZXMuZGUvYXV0aC9yZWFsbXMvUFJPRE8iLCJhdWQiOlsicmVhbG0tbWFuYWdlbWVudCIsImFjY291bnQiXSwic3ViIjoiMDM5NjY1ODctNWIwNC00Y2Y5LThiMmUtMTAwODQyZjZlZmMxIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoiYmFja2VuZFJlYWQiLCJzZXNzaW9uX3N0YXRlIjoiODgwZTZjZWEtZTliZS00OWE4LWEzZTgtZmZhMjY0YzFmNjc3IiwiYWNyIjoiMSIsInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJBZHZlcnRpc2VyLXN3X3VybCIsIkFkdmVydGlzZXItVm9udG9iZWwiLCJBZHZlcnRpc2VyIENvbW1lcnpiYW5rIiwiUHVibGlzaGVyLVplcnRpZmlrYXRlQW5sZWdlciIsIkFkdmVydGlzZXItc3dfdGVzdF8xNV9tYWkiLCJQdWJsaXNoZXIgQVJJVkEiLCJQdWJsaXNoZXItc3d1cmwiLCJBZ2VudHVyIChDb21tZXJ6YmFuayAvIFZvbnRvYmVsKSIsIlB1Ymxpc2hlciBXTyIsIkFkdmVydGlzZXIiLCJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIiwiVmVyd2FsdHVuZyIsIlB1Ymxpc2hlci1zd3VybDMiLCJQdWJsaXNoZXItT25WaXN0YSIsIlZlcm1hcmt0ZXIiLCJBZHZlcnRpc2VyLUhTQkMiLCJQdWJsaXNoZXIiLCJBZG1pbiIsIkFkdmVydGlzZXItdGVzdCIsIkFkdmVydGlzZXItc3dfdGVzdCIsIlZlcm1hcmt0ZXIgKEFkaXNmYWN0aW9uKSIsIkFnZW50dXIiLCJBZHZlcnRpc2VyLWpoYV90ZXN0IiwiQWR2ZXJ0aXNlci1NYl90ZXN0Il19LCJyZXNvdXJjZV9hY2Nlc3MiOnsicmVhbG0tbWFuYWdlbWVudCI6eyJyb2xlcyI6WyJ2aWV3LWlkZW50aXR5LXByb3ZpZGVycyIsInZpZXctcmVhbG0iLCJtYW5hZ2UtaWRlbnRpdHktcHJvdmlkZXJzIiwiaW1wZXJzb25hdGlvbiIsInJlYWxtLWFkbWluIiwiY3JlYXRlLWNsaWVudCIsIm1hbmFnZS11c2VycyIsInF1ZXJ5LXJlYWxtcyIsInZpZXctYXV0aG9yaXphdGlvbiIsInF1ZXJ5LWNsaWVudHMiLCJxdWVyeS11c2VycyIsIm1hbmFnZS1ldmVudHMiLCJtYW5hZ2UtcmVhbG0iLCJ2aWV3LWV2ZW50cyIsInZpZXctdXNlcnMiLCJ2aWV3LWNsaWVudHMiLCJtYW5hZ2UtYXV0aG9yaXphdGlvbiIsIm1hbmFnZS1jbGllbnRzIiwicXVlcnktZ3JvdXBzIl19LCJiYWNrZW5kUmVhZCI6eyJyb2xlcyI6WyJtcmVfdGVzdCJdfSwiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwic2NvcGUiOiJwcm9maWxlIGVtYWlsIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsIm5hbWUiOiJKZXNzZSBIYWFmIiwicHJlZmVycmVkX3VzZXJuYW1lIjoiamhhIiwibG9jYWxlIjoiZGUiLCJnaXZlbl9uYW1lIjoiSmVzc2UiLCJmYW1pbHlfbmFtZSI6IkhhYWYiLCJlbWFpbCI6Implc3NlLmhhYWZAYXJpdmEuZGUifQ.Femf9puFyCP1eL-c5YZGl7cW7y38DQJUYTbApzCXTld_dA37FaZGDF_OLjTjr3y4PpZXFxxubFbM59Ppkbk2hg9KmrZzdGtpj9ryPEDkYk78mljzIQ5_t1IXAXVzTcjH8-YXFgAjFlFZpaWaH_dsxDAJ06FmWcopQgHcexfCRFx4mEbPpM38zw7lPcLzysn_9EgTilVvGpGew6hWJ29BwFUkbBBKM2XGjwRIZ5YREX_byYH8SAEvI-3abAbzPLj9d5Tqhg-1MH5T1KIhOKIQLB-kIdwKvvc3lIbuxPNUXL3iE06qqF5UJXkRsm89EaSEqaWRjLAp1iDXMVG9Ni_9aw" -H  "Content-Type: application/json" -d "{  \"adSlotIds\": [],  \"advertiserIds\": [],  \"aggregationCountType\": \"CLICKS\",  \"aggregationDimension\": \"PUBLISHER\",  \"aggregationType\": \"COMPLETE\",  \"bouquetIds\": [],  \"devices\": [],  \"endDate\": \"2020-11-06\",  \"language\": \"de\",  \"publisherIds\": [],  \"regions\": [],  \"startDate\": \"2020-10-01\"}"
+    curl -X POST "https://prodo-api.ariva-services.de/api/v1/multiAggregation/timeFrame/csv/programmatic?apiToken=YOURAPITOKENHERE" -H  "accept: application/octet-stream" -H  "Content-Type: application/json" -d "{  \"adSlotIds\": [],  \"advertiserIds\": [],  \"aggregationCountType\": \"CLICKS\",  \"aggregationDimension\": \"PUBLISHER\",  \"aggregationType\": \"COMPLETE\",  \"bouquetIds\": [],  \"devices\": [],  \"endDate\": \"2020-11-06\",  \"language\": \"de\",  \"publisherIds\": [],  \"regions\": [],  \"startDate\": \"2020-10-01\"}"
 
-Natürlich muss man sich nach dem Import noch den JWT-Token holen und dann in Postman im Authorization-Header austauschen. Um sich den Token zu holen, kann man folgendes curl-Kommando importieren und die Parameter entsprechend setzen:
-
-    curl -X GET "https://prodo-api.ariva-services.de/api/v1/authentication?password=password&username=username" -H  "accept: */*"
 
 # Implementierung mit Java Spring Boot
 ## Api-Abrufe als wichtige Codesnippets:
-Das restTemplate ist ein org.springframework.web.client.RestTemplate und die apiServiceURL ist "https://prodo-api.ariva-services.de/api/v1":
-
-       public String getAuthentication(String username, String password) {
-          ResponseEntity<String> response = restTemplate.getForEntity(
-                  apiServiceURL + "/authentication?username={username}&password={password}", String.class, username, password);
-    
-          return response.getBody();
-       }
 
 Hier werden noch Header gesetzt, u.a. der Content-Type und der Authorization-Header; das ist ein POST-Request mit Request-Body (s.o.):
 
@@ -212,11 +187,10 @@ Hier werden noch Header gesetzt, u.a. der Content-Type und der Authorization-Hea
           HttpHeaders headers = new HttpHeaders();
           headers.setAccept(Collections.singletonList(MediaType.ALL));
           headers.setContentType(MediaType.APPLICATION_JSON);
-          headers.set("Authorization", "bearer " + jwtToken);
     
           HttpEntity<MultiSumAggregationRequestBodyDTO> entity = new HttpEntity<>(requestBody, headers);
           ResponseEntity<MultiSumAggregationDTO> response = restTemplate.exchange(
-                  apiServiceURL + "/multiAggregation/sum", HttpMethod.POST, entity, MultiSumAggregationDTO.class);
+                  apiServiceURL + "/multiAggregation/sum/programmatic?apiToken=YOURAPITOKENHERE", HttpMethod.POST, entity, MultiSumAggregationDTO.class);
     
           return response.getBody();
        }
